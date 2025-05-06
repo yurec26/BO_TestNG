@@ -1,5 +1,6 @@
-package org.example;
+package org.example.testng;
 
+import org.example.ArrayHelper;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
