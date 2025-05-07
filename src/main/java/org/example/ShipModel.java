@@ -10,7 +10,7 @@ public record ShipModel(
         @JsonProperty("ship_name")
         String shipName,
         @JsonProperty("dead_weight")
-        long deadWeight,
+        Long deadWeight,
         @JsonProperty("operator")
         String operator
 ) {

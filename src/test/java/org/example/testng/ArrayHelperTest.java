@@ -10,13 +10,12 @@ import static org.testng.Assert.assertTrue;
 
 public class ArrayHelperTest {
 
-
     @Test(dataProvider = "sorted")
     public void testArrayIsSorted(int[] array) {
         ArrayHelper arrayHelper = new ArrayHelper(30);
         assertTrue(arrayHelper.isSorted(array),
                 "Array should be sorted");
-        System.out.println(Thread.currentThread().getName());
+        System.out.println("ArrayHelper 1 " + Thread.currentThread().getName());
     }
 
     @Test(dataProvider = "unsorted")
@@ -24,7 +23,7 @@ public class ArrayHelperTest {
         ArrayHelper arrayHelper = new ArrayHelper(30);
         assertFalse(arrayHelper.isSorted(array),
                 "Array should be unsorted");
-        System.out.println(Thread.currentThread().getName());
+        System.out.println("ArrayHelper 2 " + Thread.currentThread().getName());
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
@@ -33,7 +32,7 @@ public class ArrayHelperTest {
         ArrayHelper arrayHelper = new ArrayHelper(30);
         int[] array = new int[0];
         arrayHelper.isSorted(array);
-        System.out.println(Thread.currentThread().getName());
+        System.out.println("ArrayHelper 3 " + Thread.currentThread().getName());
     }
 
     @Test(dataProvider = "sorted",
@@ -42,9 +41,8 @@ public class ArrayHelperTest {
     public void testExceededArray(int[] array) {
         ArrayHelper arrayHelper = new ArrayHelper(3);
         arrayHelper.isSorted(array);
-        System.out.println(Thread.currentThread().getName());
+        System.out.println("ArrayHelper 4 " + Thread.currentThread().getName());
     }
-
 
     @DataProvider(name = "sorted")
     public Object[] providerArraysSorted() {

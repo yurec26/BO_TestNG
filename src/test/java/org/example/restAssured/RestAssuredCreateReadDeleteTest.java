@@ -12,9 +12,10 @@ import java.util.Map;
 
 import static org.example.RestAssuredHelper.sendRequestToJsonBins;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 // тестики на открытой площадке для хранения джейсонов jsonbin
-public class RestAssuredTest {
+public class RestAssuredCreateReadDeleteTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -26,7 +27,7 @@ public class RestAssuredTest {
         shipElli = new ShipModel(
                 "crude tanker",
                 "Elli",
-                100_000,
+                100_000L,
                 "Palkipon"
         );
     }
@@ -34,14 +35,9 @@ public class RestAssuredTest {
     @Test(description = "Занесение в базу данных корабля")
     public void test1() throws JsonProcessingException {
         JsonNode jsonResponse = sendRequestToJsonBins
-                (shipElli,
-                        "",
-                        "post",
-                        Map.of
-                                (
-                                        "Content-Type", "application/json",
-                                        "X-Bin-Name", "Elli"
-                                ),
+                (shipElli, "/b","", "post", Map.of(
+                                "Content-Type", "application/json",
+                                "X-Bin-Name", "Elli"),
                         HttpStatus.SC_OK);
 
         ShipModel responseShip = objectMapper
@@ -49,20 +45,17 @@ public class RestAssuredTest {
 
         shipElliId = objectMapper.treeToValue(jsonResponse.get("metadata").get("id"), String.class);
 
+        assertNotNull(responseShip, "объект должен существовать в бд");
         assertEquals(responseShip, shipElli,
-                "после занесения в бд объекты должны совпадать ");
-
+                "после занесения и возврата из бд объекты должны совпадать ");
+        System.out.println("RA 1 " + Thread.currentThread().getName());
     }
 
     @Test(dependsOnMethods = "test1",
             description = "изъятие их бд по ID")
     public void test2() throws JsonProcessingException {
         JsonNode jsonResponse = sendRequestToJsonBins
-                (null,
-                        "/%s".formatted(shipElliId),
-                        "get",
-                        Map.of(),
-                        HttpStatus.SC_OK);
+                (null, "/b", "/%s".formatted(shipElliId), "get", Map.of(), HttpStatus.SC_OK);
 
         ShipModel responseShip = objectMapper
                 .treeToValue(jsonResponse.get("record"), ShipModel.class);
@@ -73,25 +66,17 @@ public class RestAssuredTest {
                 "идентификаторы должны совпадать");
         assertEquals(responseShip, shipElli,
                 "после изъятия из бд объекты должны совпадать ");
-
+        System.out.println("RA 2 " + Thread.currentThread().getName());
     }
 
     @Test(dependsOnMethods = "test2",
-            description = "удаление записи из бд и проверка наличия")
+            description = "удаление записи из бд и проверка корректности удаления")
     public void test3() {
         sendRequestToJsonBins
-                (null,
-                        "/%s".formatted(shipElliId),
-                        "delete",
-                        Map.of(),
-                        HttpStatus.SC_OK);
+                (null, "/b", "/%s".formatted(shipElliId), "delete", Map.of(), HttpStatus.SC_OK);
 
         sendRequestToJsonBins
-                (
-                        null,
-                        "/%s".formatted(shipElliId),
-                        "get",
-                        Map.of(),
-                        HttpStatus.SC_NOT_FOUND);
+                (null, "/b", "/%s".formatted(shipElliId), "get", Map.of(), HttpStatus.SC_NOT_FOUND);
+        System.out.println("RA 3 " + Thread.currentThread().getName());
     }
 }

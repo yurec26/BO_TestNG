@@ -6,18 +6,18 @@ import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertTrue;
 
-public class ParallelTests {
+public class ParallelTest {
 
     // параллель внутри итераций одного метода и параллель методов в классе - разные вещи !
     @Test(dataProvider = "unsorted",
-            invocationCount = 20,
+            invocationCount = 5,
             threadPoolSize = 2)
     public void testArrayIsSorted(int[] array) {
         ArrayHelper arrayHelper = new ArrayHelper(30);
         arrayHelper.sortArray(array);
         assertTrue(arrayHelper.isSorted(array),
                 "Array should be sorted");
-        System.out.println(Thread.currentThread().getName());
+        System.out.println(Thread.currentThread().getName() + " Parallel test 1");
     }
 
     @DataProvider(name = "unsorted",

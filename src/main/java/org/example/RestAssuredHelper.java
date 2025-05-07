@@ -11,19 +11,20 @@ import static io.restassured.RestAssured.given;
 public class RestAssuredHelper {
     public static JsonNode sendRequestToJsonBins(
             Object body,
+            String route,
             String id,
             String method,
             Map<String, String> additionalHeaders,
             int status
     ) {
         Map<String, String> headers = new HashMap<>(Map.of("X-Master-Key",
-                Objects.requireNonNull(ConfigHelper.getProperty("json_bin_token"))));
+                Objects.requireNonNull(ConfigHelper.getProperty("json_bin_token","conf.properties"))));
 
         headers.putAll(additionalHeaders);
 
         var request = given()
-                .baseUri(Objects.requireNonNull(ConfigHelper.getProperty("base_jsonbin_url")))
-                .basePath("/b%s".formatted(id))
+                .baseUri(Objects.requireNonNull(ConfigHelper.getProperty("base_jsonbin_url","conf.properties")))
+                .basePath(route+id)
                 .headers(headers);
         if (body != null) {
             request.body(body);

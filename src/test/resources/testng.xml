@@ -7,7 +7,7 @@
         <classes>
             <class name="org.example.testng.ArrayHelperTest"/>
             <class name="org.example.testng.ParametersTest"/>
-            <class name="org.example.testng.ParallelTests"/>
+            <class name="org.example.testng.ParallelTest"/>
         </classes>
     </test>
 </suite>
